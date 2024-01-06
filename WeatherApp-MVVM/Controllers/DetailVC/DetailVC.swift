@@ -33,6 +33,15 @@ class DetailVC: UIViewController, DetailViewModelProtocol {
         return button
     }()
     
+    private lazy var shareButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "square.and.arrow.up")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.imageView?.tintColor = .clrSecondaryPurple
+        button.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var forecastTitleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -76,6 +85,7 @@ class DetailVC: UIViewController, DetailViewModelProtocol {
         view.addSubview(weatherCardView)
         
         view.addSubview(favButton)
+        view.addSubview(shareButton)
         
         let bottomView = UIView()
         bottomView.translatesAutoresizingMaskIntoConstraints = false
@@ -102,6 +112,11 @@ class DetailVC: UIViewController, DetailViewModelProtocol {
             favButton.rightAnchor.constraint(equalTo: weatherCardView.rightAnchor, constant: -8),
             favButton.widthAnchor.constraint(equalToConstant: 40),
             favButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            shareButton.topAnchor.constraint(equalTo: favButton.topAnchor),
+            shareButton.rightAnchor.constraint(equalTo: favButton.leftAnchor, constant: -8),
+            shareButton.widthAnchor.constraint(equalToConstant: 40),
+            shareButton.heightAnchor.constraint(equalToConstant: 40),
             
             bottomView.leftAnchor.constraint(equalTo: view.leftAnchor),
             bottomView.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -162,5 +177,12 @@ class DetailVC: UIViewController, DetailViewModelProtocol {
             viewModel.addWeatherToFavs()
         }
         sender.isSelected.toggle()
+    }
+    
+    @objc func shareTapped() {
+        let objects = ["Check out the weather of \(viewModel.selectedWeather.city)",
+                       "It's \(viewModel.selectedWeather.temperature) degrees and \(viewModel.selectedWeather.weatherDescription.rawValue)"]
+        let activityViewController = UIActivityViewController(activityItems: objects, applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
     }
 }
