@@ -35,12 +35,12 @@ https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/AppIcon.png
 | Online Home Screen | Favs Screen (Empty) | Favs Screen | Offline Home Screen |
 | ------------------ | ------------------- | ----------- | ------------------- |
 | ![Online Home Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_online.png "Online Home Screen") | ![Favs Screen (Empty)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/favs_nofavs.png "Favs Screen (Empty)") | ![Favs Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/favs.png "Favs Screen") | ![Offline Home Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_offline.png "Offline Home Screen") |
-| Main Screen | Favourite Screen | Convert Screen | Favourite Screen |
-| ![Online Home Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_online.png "Online Home Screen") | ![Favs Screen (Empty)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/favs_nofavs.png "Favs Screen (Empty)") | ![Favs Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/favs.png "Favs Screen") | ![Offline Home Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_offline.png "Offline Home Screen") |
-| Main Screen | Favourite Screen | Convert Screen | Favourite Screen |
-| ![Online Home Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_online.png "Online Home Screen") | ![Favs Screen (Empty)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/favs_nofavs.png "Favs Screen (Empty)") | ![Favs Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/favs.png "Favs Screen") | ![Offline Home Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_offline.png "Offline Home Screen") |
-
-
+| Offline Home Screen (Empty) | Home Screen Pagination Indicator | Home Screen Search (Result) | Home Screen Search (No Result) |
+| ![Offline Home Screen (Empty)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_offline_nocacheddata.png "Offline Home Screen (Empty)") | ![Home Screen Pagination Indicator](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_paginationindicator.png "Home Screen Pagination Indicator") | ![Home Screen Search (Result)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/search_found.png "Home Screen Search (Result)") | ![Home Screen Search (No Result)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/search_nofound.png "Home Screen Search (No Result)") |
+| Detail Screen | Detail Screen (Connection Error) | Detail Screen Activity Controller | Activity Controller Result |
+| ![Detail Screen](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/detail.png "Detail Screen") | ![Detail Screen (Connection Error)](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/detail_connectionerror.png "Detail Screen (Connection Error)") | ![Detail Screen Activity Controller](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/detail_activityvc.png "Detail Screen Activity Controller") | ![Activity Controller Result](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/activityvc_result.png "Activity Controller Result") |
+| Swipe to Add Fav | Swipe to Remove Fav |
+| ![Swipe to Add Fav](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_addtofav.png "Swipe to Add Fav") | ![Swipe to Remove Fav](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_removefromfav.png "Swipe to Remove Fav") |
 
 
 
