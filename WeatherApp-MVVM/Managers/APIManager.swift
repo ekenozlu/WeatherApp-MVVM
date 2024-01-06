@@ -7,11 +7,18 @@
 
 import Foundation
 
-protocol APIDelegate {
+enum ErrorType : String {
+    case noConnection = "You don't have network connection"
+    case unableToFetchFromNetwork = "Unable to fetch data from network"
+    case unableToFetchFromCoreData = "Unable to fetch previously cached data"
+    case emptyCoreData = "There is no previously cached data"
+}
+
+protocol APIDelegate : AnyObject{
     func createRequest(with paramaters : [String : Any]) -> URLRequest?
-    func fetchWeathers(of count : Int, completion : @escaping ((Result<[Weather],Error>) -> ()))
-    func searchWeather(by text : String, completion : @escaping ((Result<[Weather],Error>) -> ()))
-    func getWeatherDetail(by id : String, completion : @escaping ((Result<Weather,Error>) -> ()))
+    func fetchWeathers(of count : Int, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void)
+    func searchWeather(by text : String, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ errorDescription: ErrorType?) -> Void)
+    func getWeatherDetail(by id : String, completion : @escaping (_ weather: Weather?, _ networkStatus: Bool?, _ errorDescription: ErrorType?) -> ())
 }
 
 final class APIManager : APIDelegate{
@@ -41,7 +48,7 @@ final class APIManager : APIDelegate{
         }
     }
     
-    func fetchWeathers(of count : Int, completion : @escaping ((Result<[Weather],Error>) -> ())) {
+    func fetchWeathers(of count : Int, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void) {
         let currentPage : Int = (count / itemsPerPage) + 1
         print("Current Page: \(currentPage)")
         let limit = itemsPerPage * currentPage
@@ -50,33 +57,32 @@ final class APIManager : APIDelegate{
             if let request = createRequest(with: ["limit" : limit]) {
                 let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
                     if error != nil {
-                        completion(.failure(NSError()))
+                        completion(nil,true,.unableToFetchFromNetwork)
                     } else if let data = data {
                         let weatherArr = try? JSONDecoder().decode([Weather].self, from: data)
                         if currentPage == 1 {
                             CoreDataManager.shared.cacheOrUpdateFirst10ToCoreData(by: weatherArr ?? []) { result in
                                 if result {
-                                    completion(.success(weatherArr ?? []))
+                                    completion(weatherArr!,true,nil)
                                 }
                             }
-                            //SAVE OR UPDATE COREDATA FOR FIRST PAGE ITEMS
                         }
-                        completion(.success(weatherArr ?? []))
+                        completion(weatherArr!,true,nil)
                     }
                 }
                 dataTask.resume()
             } else {
-                completion(.failure(NSError()))
+                completion(nil,true,.unableToFetchFromNetwork)
             }
         }
         else {
             if let objects = CoreDataManager.shared.fetchCachedWeathers() {
                 var weatherArr : [Weather] = []
                 if objects.isEmpty {
-                    completion(.success(weatherArr))
+                    completion(nil,false,.emptyCoreData)
                 } else {
                     for object in objects {
-                        let weather = Weather(id: object.value(forKey: "id")  as? Int ?? 0,
+                        let weather = Weather(id: Int(object.value(forKey: "id") as? String ?? "-1")!,
                                               city: object.value(forKey: "city")  as? String ?? "N/A",
                                               country: object.value(forKey: "country")  as? String ?? "N/A",
                                               latitude: 0.0,
@@ -87,47 +93,47 @@ final class APIManager : APIDelegate{
                                               windSpeed: 0.0,
                                               forecast: [])
                         weatherArr.append(weather)
-                        completion(.success(weatherArr))
                     }
+                    completion(weatherArr,false,nil)
                 }
             } else {
-                completion(.failure(NSError()))
+                completion(nil,false,.unableToFetchFromCoreData)
             }
         }
         
     }
     
-    func searchWeather(by text : String, completion : @escaping ((Result<[Weather],Error>) -> ())) {
+    func searchWeather(by text : String, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void) {
         if let request = createRequest(with: ["search" : text]),
            ConnectionManager.shared.isDeviceConnectedToNetwork() {
             let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
                 if error != nil {
-                    completion(.failure(NSError()))
+                    completion(nil,true,.unableToFetchFromNetwork)
                 } else if let data = data {
                     let weatherArr = try? JSONDecoder().decode([Weather].self, from: data)
-                    completion(.success(weatherArr ?? []))
+                    completion(weatherArr!,true,nil)
                 }
             }
             dataTask.resume()
         } else {
-            completion(.failure(NSError()))
+            completion(nil,false,.noConnection)
         }
     }
     
-    func getWeatherDetail(by id : String, completion : @escaping ((Result<Weather,Error>) -> ())) {
+    func getWeatherDetail(by id : String, completion : @escaping (_ weather: Weather?, _ networkStatus: Bool?, _ error: ErrorType?) -> ()) {
         if ConnectionManager.shared.isDeviceConnectedToNetwork(),
            let urlString = URL(string: "\(baseURL)/\(id)"){
             let dataTask = URLSession.shared.dataTask(with: urlString) { data, response, error in
                 if error != nil {
-                    completion(.failure(NSError()))
+                    completion(nil,true,.unableToFetchFromNetwork)
                 } else if let data = data {
                     let weather = try? JSONDecoder().decode(Weather.self, from: data)
-                    completion(.success(weather!))
+                    completion(weather!,true,nil)
                 }
             }
             dataTask.resume()
         } else {
-            completion(.failure(NSError()))
+            completion(nil,false,.noConnection)
         }
     }
 }

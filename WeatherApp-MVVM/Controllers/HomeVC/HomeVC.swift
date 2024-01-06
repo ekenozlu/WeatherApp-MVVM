@@ -22,7 +22,7 @@ final class HomeVC: UIViewController, HomeViewModelDelegate {
     }
     
     internal lazy var searchController : UISearchController = {
-       let sc = UISearchController(searchResultsController: nil)
+        let sc = UISearchController(searchResultsController: nil)
         sc.searchBar.searchTextField.textColor = .clrMainPurple
         sc.searchBar.searchTextField.placeholder = "Search For Place"
         sc.searchBar.tintColor = .clrMainPurple
@@ -30,7 +30,13 @@ final class HomeVC: UIViewController, HomeViewModelDelegate {
         return sc
     }()
     
+    internal lazy var offlineView = CustomOfflineView(title: "You are offline. Cached data is shown")
     internal var emptyView : CustomEmptyView!
+    internal lazy var refreshControl : UIRefreshControl = {
+        let rc = UIRefreshControl()
+        rc.tintColor = .clrSecondaryPurple
+        return rc
+    }()
     
     internal lazy var weatherTV = WeatherTableView()
     
@@ -69,8 +75,12 @@ final class HomeVC: UIViewController, HomeViewModelDelegate {
         
         emptyView = CustomEmptyView(icon: UIImage(systemName: "cloud.rain")!.withRenderingMode(.alwaysTemplate), title: "")
         self.view.addSubview(emptyView)
+        
+        refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
+        weatherTV.refreshControl = refreshControl
         self.view.addSubview(weatherTV)
         self.view.addSubview(loadingIndicator)
+        self.view.addSubview(offlineView)
         
         NSLayoutConstraint.activate([
             emptyView.leftAnchor.constraint(equalTo: self.view.leftAnchor),
@@ -83,20 +93,27 @@ final class HomeVC: UIViewController, HomeViewModelDelegate {
             weatherTV.rightAnchor.constraint(equalTo: self.view.rightAnchor),
             weatherTV.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
             
+            offlineView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            offlineView.leftAnchor.constraint(equalTo: self.view.leftAnchor),
+            offlineView.rightAnchor.constraint(equalTo: self.view.rightAnchor),
+            offlineView.heightAnchor.constraint(equalToConstant: 50),
+            
             loadingIndicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             loadingIndicator.heightAnchor.constraint(equalToConstant: 20),
             loadingIndicator.widthAnchor.constraint(equalToConstant: 20),
             loadingIndicator.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
         ])
     }
-    func updateWeatherTV() {
+    func updateWeatherTV(with networkStatus : Bool) {
         viewModel.reachedBottom = false
         DispatchQueue.main.async {
             self.weatherTV.isHidden = false
             self.emptyView.isHidden = true
+            self.offlineView.isHidden = networkStatus
             self.weatherTV.reloadData()
             self.loadingIndicator.stopAnimating()
             self.loadingIndicator.isHidden = true
+            self.refreshControl.endRefreshing()
         }
     }
     

@@ -8,7 +8,7 @@
 import UIKit
 
 class FavsVC: UIViewController, FavsViewModelDelegate {
-    private let viewModel : FavsViewModel
+    internal let viewModel : FavsViewModel
     
     init(viewModel: FavsViewModel) {
         self.viewModel = viewModel
@@ -21,7 +21,14 @@ class FavsVC: UIViewController, FavsViewModelDelegate {
     }
     
     private var emptyView : CustomEmptyView!
-    private lazy var favsTV = WeatherTableView()
+    
+    internal lazy var refreshControl : UIRefreshControl = {
+        let rc = UIRefreshControl()
+        rc.tintColor = .clrSecondaryPurple
+        return rc
+    }()
+    
+    internal lazy var favsTV = WeatherTableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +39,6 @@ class FavsVC: UIViewController, FavsViewModelDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         viewModel.fetchFavsFromCoreData()
-        
     }
     
     private func setupNavigationBar() {
@@ -50,6 +56,8 @@ class FavsVC: UIViewController, FavsViewModelDelegate {
         
         favsTV.dataSource = self
         favsTV.delegate = self
+        refreshControl.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
+        favsTV.refreshControl = refreshControl
         self.view.addSubview(favsTV)
         
         NSLayoutConstraint.activate([
@@ -70,6 +78,7 @@ class FavsVC: UIViewController, FavsViewModelDelegate {
             self.favsTV.isHidden = false
             self.emptyView.isHidden = true
             self.favsTV.reloadData()
+            self.refreshControl.endRefreshing()
         }
     }
     
@@ -86,37 +95,6 @@ class FavsVC: UIViewController, FavsViewModelDelegate {
             self.favsTV.isHidden = true
             self.emptyView.isHidden = false
             self.emptyView.changeTitle(with: "You don't have any favourites yet.\nAdd your first from details page")
-        }
-    }
-}
-
-extension FavsVC : UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.favsArr.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.cellIdentifier, for: indexPath) as? WeatherTableViewCell else {
-            return UITableViewCell()
-        }
-        let object = viewModel.favsArr[indexPath.row]
-        cell.cityLabel.text = object.city
-        cell.countryLabel.text = object.country
-        cell.degreeLabel.text = "\(object.temperature)°C"
-        cell.descriptionLabel.text = object.weatherDescription.rawValue
-        cell.forecastImageView.image = UIImage(named: object.descriptionImageName)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if ConnectionManager.shared.isDeviceConnectedToNetwork() {
-            let apiManager = APIManager()
-            let viewModel = DetailViewModel(apiManager: apiManager, selectedWeatherID: "\(viewModel.favsArr[indexPath.row].id)")
-            let vc = DetailVC(viewModel: viewModel)
-            vc.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(vc, animated: true)
-        } else {
-            
         }
     }
 }

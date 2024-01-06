@@ -7,17 +7,17 @@
 
 import Foundation
 
-protocol HomeViewModelDelegate {
-    func updateWeatherTV()
+protocol HomeViewModelDelegate : AnyObject {
+    func updateWeatherTV(with networkStatus : Bool)
     func showStartEmptyView()
     func showSearchEmptyView()
 }
 
 final class HomeViewModel {
     
-    private let apiManager : APIManager
+    private let apiManager : APIDelegate
     
-    init(apiManager: APIManager) {
+    init(apiManager: APIDelegate) {
         self.apiManager = apiManager
     }
     
@@ -28,39 +28,55 @@ final class HomeViewModel {
     public var loadCheck : Bool = false
     
     func fetchWeathers() {
-        apiManager.fetchWeathers(of: weatherArr.count) { result in
-            switch result {
-            case .success(let array):
-                self.weatherArr = array
-                if self.weatherArr.isEmpty {
-                    self.delegate?.showStartEmptyView()
+        apiManager.fetchWeathers(of: weatherArr.count) { [self] weatherArr, networkStatus, error in
+            if error != nil {
+                delegate?.showStartEmptyView()
+            } else if weatherArr != nil , networkStatus == true {
+                self.weatherArr = weatherArr!
+                if weatherArr!.isEmpty {
+                    delegate?.showStartEmptyView()
                 } else {
-                    self.delegate?.updateWeatherTV()
+                    delegate?.updateWeatherTV(with: networkStatus!)
                 }
-            case .failure(let error):
-                self.delegate?.showStartEmptyView()
-                print(error.localizedDescription)
+            } else if weatherArr != nil , networkStatus == false {
+                self.weatherArr = weatherArr!
+                delegate?.updateWeatherTV(with: networkStatus!)
+            }
+        }
+    }
+    
+    func refreshWeatherData() {
+        apiManager.fetchWeathers(of: 0) { [self] weatherArr, networkStatus, error in
+            if error != nil {
+                delegate?.showStartEmptyView()
+            } else if weatherArr != nil , networkStatus == true {
+                self.weatherArr = weatherArr!
+                if weatherArr!.isEmpty {
+                    delegate?.showStartEmptyView()
+                } else {
+                    delegate?.updateWeatherTV(with: networkStatus!)
+                }
+            } else if weatherArr != nil , networkStatus == false {
+                delegate?.updateWeatherTV(with: networkStatus!)
             }
         }
     }
     
     func searchWeather(by name : String) {
-        apiManager.searchWeather(by: name) { result in
-            switch result {
-            case .success(let array):
-                self.weatherArr = array
-                if self.weatherArr.isEmpty {
-                    self.delegate?.showSearchEmptyView()
+        apiManager.searchWeather(by: name) { [self] weatherArr, networkStatus, error in
+            if error != nil {
+                delegate?.showSearchEmptyView()
+            } else if weatherArr != nil , networkStatus == true {
+                self.weatherArr = weatherArr!
+                if weatherArr!.isEmpty {
+                    delegate?.showSearchEmptyView()
                 } else {
-                    self.delegate?.updateWeatherTV()
+                    delegate?.updateWeatherTV(with: networkStatus!)
                 }
-            case .failure(let error):
-                self.delegate?.showSearchEmptyView()
-                print(error.localizedDescription)
+            } else if weatherArr != nil , networkStatus == false {
+                delegate?.updateWeatherTV(with: networkStatus!)
             }
         }
     }
-    
-    
     
 }

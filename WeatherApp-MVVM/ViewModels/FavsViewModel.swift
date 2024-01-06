@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol FavsViewModelDelegate {
+protocol FavsViewModelDelegate : AnyObject {
     func updateFavsTV()
     func showUnableToFetchView()
     func showNoFavsView()
