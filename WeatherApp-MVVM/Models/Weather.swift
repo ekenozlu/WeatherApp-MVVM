@@ -60,16 +60,4 @@ final class Weather: Codable {
     }
 }
 
-enum WeatherDescription: String, Codable {
-    case clearSky = "Clear sky"
-    case cloudy = "Cloudy"
-    case partlyCloudy = "Partly cloudy"
-    case rain = "Rain"
-    case rainShowers = "Rain showers"
-    case rainy = "Rainy"
-    case scatteredClouds = "Scattered clouds"
-    case sunny = "Sunny"
-    case weatherDescriptionPartlyCloudy = "Partly Cloudy"
-}
-
 

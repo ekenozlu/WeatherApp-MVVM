@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol HomeViewModelDelegate : AnyObject {
+protocol HomeViewModelProtocol : AnyObject {
     func updateWeatherTV(with networkStatus : Bool)
     func showStartEmptyView()
     func showSearchEmptyView()
@@ -15,13 +15,13 @@ protocol HomeViewModelDelegate : AnyObject {
 
 final class HomeViewModel {
     
-    private let apiManager : APIDelegate
+    private let apiManager : APIManagerProtocol
     
-    init(apiManager: APIDelegate) {
+    init(apiManager: APIManagerProtocol) {
         self.apiManager = apiManager
     }
     
-    public var delegate : HomeViewModelDelegate?
+    public var delegate : HomeViewModelProtocol?
     
     public var weatherArr : [Weather] = []
     public var reachedBottom : Bool = false

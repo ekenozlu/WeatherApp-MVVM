@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol FavsViewModelDelegate : AnyObject {
+protocol FavsViewModelProtocol : AnyObject {
     func updateFavsTV()
     func showUnableToFetchView()
     func showNoFavsView()
@@ -15,7 +15,7 @@ protocol FavsViewModelDelegate : AnyObject {
 
 final class FavsViewModel {
     
-    public var delegate : FavsViewModelDelegate?
+    public var delegate : FavsViewModelProtocol?
     
     public var favsArr : [Weather] = []
     

@@ -7,21 +7,14 @@
 
 import Foundation
 
-enum ErrorType : String {
-    case noConnection = "You don't have network connection"
-    case unableToFetchFromNetwork = "Unable to fetch data from network"
-    case unableToFetchFromCoreData = "Unable to fetch previously cached data"
-    case emptyCoreData = "There is no previously cached data"
-}
-
-protocol APIDelegate : AnyObject{
+protocol APIManagerProtocol : AnyObject {
     func createRequest(with paramaters : [String : Any]) -> URLRequest?
     func fetchWeathers(of count : Int, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void)
     func searchWeather(by text : String, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ errorDescription: ErrorType?) -> Void)
     func getWeatherDetail(by id : String, completion : @escaping (_ weather: Weather?, _ networkStatus: Bool?, _ errorDescription: ErrorType?) -> ())
 }
 
-final class APIManager : APIDelegate{
+final class APIManager : APIManagerProtocol{
     
     private let baseURL = "https://freetestapi.com/api/v1/weathers"
     
@@ -50,7 +43,6 @@ final class APIManager : APIDelegate{
     
     func fetchWeathers(of count : Int, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void) {
         let currentPage : Int = (count / itemsPerPage) + 1
-        print("Current Page: \(currentPage)")
         let limit = itemsPerPage * currentPage
         
         if ConnectionManager.shared.isDeviceConnectedToNetwork() {
@@ -100,7 +92,6 @@ final class APIManager : APIDelegate{
                 completion(nil,false,.unableToFetchFromCoreData)
             }
         }
-        
     }
     
     func searchWeather(by text : String, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void) {

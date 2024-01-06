@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FavsVC: UIViewController, FavsViewModelDelegate {
+class FavsVC: UIViewController, FavsViewModelProtocol {
     internal let viewModel : FavsViewModel
     
     init(viewModel: FavsViewModel) {

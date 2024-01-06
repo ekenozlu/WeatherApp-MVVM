@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class HomeVC: UIViewController, HomeViewModelDelegate {
+final class HomeVC: UIViewController, HomeViewModelProtocol {
     
     internal let viewModel : HomeViewModel
     

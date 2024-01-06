@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DetailViewModelDelegate : AnyObject {
+protocol DetailViewModelProtocol : AnyObject {
     func updateWeatherInformation(weather : Weather)
     func setButton(selected bool : Bool)
     func showFetchError()
@@ -15,15 +15,15 @@ protocol DetailViewModelDelegate : AnyObject {
 
 final class DetailViewModel {
     
-    private let apiManager : APIDelegate
+    private let apiManager : APIManagerProtocol
     private let selectedWeatherID : String
     
-    init(apiManager: APIDelegate, selectedWeatherID: String!) {
+    init(apiManager: APIManagerProtocol, selectedWeatherID: String!) {
         self.apiManager = apiManager
         self.selectedWeatherID = selectedWeatherID
     }
     
-    public var delegate : DetailViewModelDelegate?
+    public var delegate : DetailViewModelProtocol?
     public var selectedWeather : Weather!
     
     func getWeatherDetails() {

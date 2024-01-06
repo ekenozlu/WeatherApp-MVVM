@@ -13,17 +13,17 @@ final class WeatherApp_MVVMTests: XCTestCase {
     private var mockAPIManager : MockAPIManager!
     private var homeViewModelTest : HomeViewModel!
     private var detailViewModelTest : DetailViewModel!
-    private var homeDelegate : MockHomeViewModelDelegate!
-    private var detailDelegate : MockDetailViewModelDelegate!
+    private var homeDelegate : MockHomeViewModelProtocol!
+    private var detailDelegate : MockDetailViewModelProtocol!
 
     override func setUpWithError() throws {
         mockAPIManager = MockAPIManager()
         homeViewModelTest = HomeViewModel(apiManager: mockAPIManager)
-        homeDelegate = MockHomeViewModelDelegate()
+        homeDelegate = MockHomeViewModelProtocol()
         homeViewModelTest.delegate = homeDelegate
         
         detailViewModelTest = DetailViewModel(apiManager: mockAPIManager, selectedWeatherID: "")
-        detailDelegate = MockDetailViewModelDelegate()
+        detailDelegate = MockDetailViewModelProtocol()
         detailViewModelTest.delegate = detailDelegate
     }
 
@@ -132,7 +132,7 @@ final class WeatherApp_MVVMTests: XCTestCase {
     }
 }
 
-class MockAPIManager : APIDelegate {
+class MockAPIManager : APIManagerProtocol {
     var mockFetchResult : ([WeatherApp_MVVM.Weather]?, Bool?, WeatherApp_MVVM.ErrorType?)?
     var mockSearchResult : ([WeatherApp_MVVM.Weather]?, Bool?, WeatherApp_MVVM.ErrorType?)?
     var mockDetailResult : (WeatherApp_MVVM.Weather?, Bool?, WeatherApp_MVVM.ErrorType?)?
@@ -169,7 +169,7 @@ class MockAPIManager : APIDelegate {
     }
 }
 
-class MockHomeViewModelDelegate : HomeViewModelDelegate {
+class MockHomeViewModelProtocol : HomeViewModelProtocol {
     var checkBool : Bool = false
     func updateWeatherTV(with networkStatus: Bool) {
         checkBool = true
@@ -184,7 +184,7 @@ class MockHomeViewModelDelegate : HomeViewModelDelegate {
     }
 }
 
-class MockDetailViewModelDelegate : DetailViewModelDelegate {
+class MockDetailViewModelProtocol : DetailViewModelProtocol {
     var checkBool = false
     func updateWeatherInformation(weather: WeatherApp_MVVM.Weather) {
         checkBool = true

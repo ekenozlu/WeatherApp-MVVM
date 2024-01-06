@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-class DetailVC: UIViewController, DetailViewModelDelegate {
+class DetailVC: UIViewController, DetailViewModelProtocol {
     
     private var viewModel : DetailViewModel
     
@@ -132,11 +132,9 @@ class DetailVC: UIViewController, DetailViewModelDelegate {
         if bool {
             favButton.setImage(UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
             favButton.isSelected = true
-            print("eklendi - ekli")
         } else {
             favButton.setImage(UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
             favButton.isSelected = false
-            print("çıkarıldı - ekli değil - eklenemedi")
         }
     }
     
@@ -153,7 +151,8 @@ class DetailVC: UIViewController, DetailViewModelDelegate {
     }
     
     func showFetchError() {
-        //ALERT
+        AlertManager.shared.showAlert(in: self, title: "Unable to fetch details right now.", message: "Please try again later", btnText: "Ok")
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func favTapped(_ sender : UIButton) {

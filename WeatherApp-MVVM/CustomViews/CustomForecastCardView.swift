@@ -86,7 +86,7 @@ final class CustomForecastCardView : UIView {
         ])
     }
     
-    func setForecastAndView(forecast : Forecast){
+    public func setForecastAndView(forecast : Forecast){
         forecastImageView.image = UIImage(named: forecast.descriptionImageName)
         dateLabel.text = forecast.prettyDateString
         degreeLabel.text = "\(forecast.temperature)°C"
