@@ -40,5 +40,7 @@ This application is built for a case study assignment.
 | Swipe to Add Fav | Swipe to Remove Fav | Home Screen Refresh Control |
 | ![Swipe to Add Fav](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_addtofav.png "Swipe to Add Fav") | ![Swipe to Remove Fav](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_removefromfav.png "Swipe to Remove Fav") | ![Home Screen Refresh Control](https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/home_refreshcontrol.png "Home Screen Refresh Control") |
 
-
+| Other Devices |
+| ------------- |
+| <img src="https://github.com/ekenozlu/WeatherApp-MVVM/blob/main/GitImages/all_devices.png" width="1000" alt="Other Devices"> |
 
