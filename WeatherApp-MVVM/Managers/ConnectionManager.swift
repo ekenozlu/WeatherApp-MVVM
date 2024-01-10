@@ -9,12 +9,14 @@ import Foundation
 import Network
 
 final class ConnectionManager {
-    
+    //- MARK: Singleton Object
     public static let shared = ConnectionManager()
     
+    //- MARK: Variables
     private let monitor = NWPathMonitor()
     private var isConnected: Bool = false
     
+    //- MARK: Initializer, Deinitializer
     private init() {
         startMonitoring()
     }
@@ -39,6 +41,10 @@ final class ConnectionManager {
         monitor.cancel()
     }
     
+    ///This function controls the network connection.
+    ///
+    ///> Returns:
+    ///>Boolean for the connection status. Returns true if the device connected.
     func isDeviceConnectedToNetwork() -> Bool {
         return isConnected
     }

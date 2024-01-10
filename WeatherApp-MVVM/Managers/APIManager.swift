@@ -7,6 +7,7 @@
 
 import Foundation
 
+//MARK: - API Manager Protocol
 protocol APIManagerProtocol : AnyObject {
     func createRequest(with paramaters : [String : Any]) -> URLRequest?
     func fetchWeathers(of count : Int, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void)
@@ -14,13 +15,17 @@ protocol APIManagerProtocol : AnyObject {
     func getWeatherDetail(by id : String, completion : @escaping (_ weather: Weather?, _ networkStatus: Bool?, _ errorDescription: ErrorType?) -> ())
 }
 
+//MARK: - APIManager
 final class APIManager : APIManagerProtocol{
     
+    //Base URL
     private let baseURL = "https://freetestapi.com/api/v1/weathers"
     
+    //Variable for page counting
     private var itemsPerPage = 10
     
-    func createRequest(with paramaters : [String : Any]) -> URLRequest? {
+    //Internal function for generating request for each function
+    internal func createRequest(with paramaters : [String : Any]) -> URLRequest? {
         var urlComponents = URLComponents(string: baseURL)
         var queryItems : [URLQueryItem] = []
         
@@ -41,6 +46,14 @@ final class APIManager : APIManagerProtocol{
         }
     }
     
+    ///This function fetchs weather data from API or cached data according to network connection.
+    ///
+    ///> Parameters:
+    ///> "of count : Int" should be the current fetched data before call.
+    ///
+    ///> Returns:
+    ///>Function returns 3 elements in completion,
+    ///>Each of them is optional. Function checks for internet connection and returns online or cached data. Or an customized error for each scenario
     func fetchWeathers(of count : Int, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void) {
         let currentPage : Int = (count / itemsPerPage) + 1
         let limit = itemsPerPage * currentPage
@@ -53,10 +66,8 @@ final class APIManager : APIManagerProtocol{
                     } else if let data = data {
                         let weatherArr = try? JSONDecoder().decode([Weather].self, from: data)
                         if currentPage == 1 {
-                            CoreDataManager.shared.cacheOrUpdateFirst10ToCoreData(by: weatherArr ?? []) { result in
-                                if result {
-                                    completion(weatherArr!,true,nil)
-                                }
+                            CoreDataManager.shared.cacheOrUpdateFirst10ToCoreData(by: weatherArr ?? []) {
+                                completion(weatherArr!,true,nil)
                             }
                         }
                         completion(weatherArr!,true,nil)
@@ -94,6 +105,14 @@ final class APIManager : APIManagerProtocol{
         }
     }
     
+    ///This function fetchs weather data from API according to search text. API returns the cities according to name contains the text or not.
+    ///
+    ///> Parameters:
+    ///> "by text : String" should be the search text
+    ///
+    ///> Returns:
+    ///>Function returns 3 elements in completion,
+    ///>Each of them is optional. Function checks for internet connection and returns online result data. Or an customized error for each scenario
     func searchWeather(by text : String, completion : @escaping (_ weatherArr: [Weather]?, _ networkStatus: Bool?, _ error: ErrorType?) -> Void) {
         if let request = createRequest(with: ["search" : text]),
            ConnectionManager.shared.isDeviceConnectedToNetwork() {
@@ -111,6 +130,14 @@ final class APIManager : APIManagerProtocol{
         }
     }
     
+    ///This function fetchs single weather data from API.
+    ///
+    ///> Parameters:
+    ///> "by id : String" should be the id of the desired data
+    ///
+    ///> Returns:
+    ///>Function returns 3 elements in completion,
+    ///>Each of them is optional. Function checks for internet connection and returns online result data. Or an customized error for each scenario
     func getWeatherDetail(by id : String, completion : @escaping (_ weather: Weather?, _ networkStatus: Bool?, _ error: ErrorType?) -> ()) {
         if ConnectionManager.shared.isDeviceConnectedToNetwork(),
            let urlString = URL(string: "\(baseURL)/\(id)"){
