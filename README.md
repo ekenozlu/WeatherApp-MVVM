@@ -2,18 +2,21 @@
 This application is built for a case study assignment.
 
 ## Small Notes about Case Study
-
+1. I handled the pagination as fetching the same data with "limit" keyword. Since the given API is not supporting the traditional "limit" and "offset" keywords at the same time.
+2. I fetched the same data of the selected weather in DetailVC again. Since it is a more common situtation in other API's
+3. Wrote documentation comment lines in manager classes such as API, CoreData. And also used Mark annotations across the files for better understanding.
 
 ##App Contains
 1. MVVM Structure
 2. OOP and POP
 3. Unit Tests, UI Tests
 4. CoreData
-5. URLSession and Pagination
-6. DispatchQueue, DispatchGroup
-7. MapKit and other UIKit elements
-8. NSLayoutConstraint
-9. Error Messages Handling
+5. Documentated Functions
+6. URLSession and Pagination
+7. DispatchQueue, DispatchGroup
+8. MapKit and other UIKit elements
+9. NSLayoutConstraint
+10. Error Messages Handling
 
 ## App Lifecycle
 1. User can see the weather forecast of some cities by 10 items per page.
